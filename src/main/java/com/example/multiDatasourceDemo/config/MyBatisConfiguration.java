@@ -1,6 +1,6 @@
-package com.example.multiDatasourceDemo.com.example.config;
+package com.example.multiDatasourceDemo.config;
 
-import com.example.multiDatasourceDemo.com.mapper.MetaMapper;
+import com.example.multiDatasourceDemo.anothermapper.anotherMapper;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -10,10 +10,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
+
+import javax.inject.Named;
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan("com.mapper")
+@MapperScan("com.example.multiDatasourceDemo.mapper")
 public class MyBatisConfiguration {
     public static final String PRIMARY_SESSION_FACTORY = "primarySessionFactory";
     public static final String METADATA_SESSION_FACTORY = "metadataSessionFactory";
@@ -38,15 +40,15 @@ public class MyBatisConfiguration {
         final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(anotherDataSource);
         PathMatchingResourcePatternResolver pathM3R = new PathMatchingResourcePatternResolver();
-        sqlSessionFactoryBean.setMapperLocations(pathM3R.getResources("classpath:metamapper/MetaMapper.xml"));
+        sqlSessionFactoryBean.setMapperLocations(pathM3R.getResources("classpath:anothermapper/anotherMapper.xml"));
         final SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
         return sqlSessionFactoryBean;
     }
 
     @Bean
-    public MapperFactoryBean<MetaMapper> dbMapper(
+    public MapperFactoryBean<anotherMapper> dbMapper(
             @Named(METADATA_SESSION_FACTORY) final SqlSessionFactoryBean sqlSessionFactoryBean) throws Exception {
-        MapperFactoryBean<MetaMapper> factoryBean = new MapperFactoryBean<>(MetaMapper.class);
+        MapperFactoryBean<anotherMapper> factoryBean = new MapperFactoryBean<>(anotherMapper.class);
         factoryBean.setSqlSessionFactory(sqlSessionFactoryBean.getObject());
         return factoryBean;
     }
