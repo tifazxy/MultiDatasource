@@ -1,13 +1,11 @@
-package com.example.multiDatasourceDemo.mapper;
+package com.example.multiDatasourceDemo.anothermapper;
 
 import com.example.multiDatasourceDemo.domain.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Component;
 
 @Mapper
-@Component
-public interface PrimaryMapper {
+public interface AnotherMapper {
 
     public void insertUser(@Param("id")String id, @Param("username")String username);
 

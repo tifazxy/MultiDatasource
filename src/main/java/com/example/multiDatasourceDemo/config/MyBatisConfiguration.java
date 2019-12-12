@@ -1,9 +1,11 @@
 package com.example.multiDatasourceDemo.config;
 
-import com.example.multiDatasourceDemo.anothermapper.anotherMapper;
+import com.example.multiDatasourceDemo.anothermapper.AnotherMapper;
+import org.apache.ibatis.io.VFS;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
+import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
 import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,9 +28,10 @@ public class MyBatisConfiguration {
             @Named(DatabaseConfiguration.PRIMARY_DATASOURCE)final DataSource primaryDataSource) throws Exception{
         final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(primaryDataSource);
+        VFS.addImplClass(SpringBootVFS.class);
         PathMatchingResourcePatternResolver pathM3R = new PathMatchingResourcePatternResolver();
         sqlSessionFactoryBean.setMapperLocations(pathM3R.getResources("classpath:mapper/**/*Mapper.xml"));
-        sqlSessionFactoryBean.setTypeAliasesPackage("com.domain");
+        sqlSessionFactoryBean.setTypeAliasesPackage("com.example.multiDatasourceDemo.domain");
         SqlSessionFactory sqlSessionFactory;
         sqlSessionFactory = sqlSessionFactoryBean.getObject();
         return sqlSessionFactoryBean;
@@ -41,14 +44,15 @@ public class MyBatisConfiguration {
         sqlSessionFactoryBean.setDataSource(anotherDataSource);
         PathMatchingResourcePatternResolver pathM3R = new PathMatchingResourcePatternResolver();
         sqlSessionFactoryBean.setMapperLocations(pathM3R.getResources("classpath:anothermapper/anotherMapper.xml"));
+        sqlSessionFactoryBean.setTypeAliasesPackage("com.example.multiDatasourceDemo.domain");
         final SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
         return sqlSessionFactoryBean;
     }
 
     @Bean
-    public MapperFactoryBean<anotherMapper> dbMapper(
+    public MapperFactoryBean<AnotherMapper> dbMapper(
             @Named(METADATA_SESSION_FACTORY) final SqlSessionFactoryBean sqlSessionFactoryBean) throws Exception {
-        MapperFactoryBean<anotherMapper> factoryBean = new MapperFactoryBean<>(anotherMapper.class);
+        MapperFactoryBean<AnotherMapper> factoryBean = new MapperFactoryBean<>(AnotherMapper.class);
         factoryBean.setSqlSessionFactory(sqlSessionFactoryBean.getObject());
         return factoryBean;
     }
